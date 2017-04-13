@@ -1,4 +1,4 @@
 require_relative 'config/database'
-require_relative 'models/building'
+require_relative 'app/models/building'
 
 puts Building.first
