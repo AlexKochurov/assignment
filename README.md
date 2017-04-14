@@ -9,7 +9,7 @@ So I'm in doubt if I understood it correctly
 
 ## To do
 
-- Parse csv and create convinient data structures
-- Write logic for checking if import data belongs to DB already
++ *Parse csv and create convinient data structures* **done**
++ *Write logic for checking if import data belongs to DB already* **done**
 - Send new data to WEBrick
 - Configure WEBrick to get Post responces
