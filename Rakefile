@@ -12,3 +12,8 @@ task :s do
 
   server.start
 end
+
+task :dback do
+  `rm db/development.sqlite3`
+  `cp db/development.sqlite3.backup db/development.sqlite3`
+end

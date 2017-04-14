@@ -1,5 +1,7 @@
+require 'csv'
+
 class CSVParser
-  attr_reader :data
+  attr_reader :data, :filepath
 
   def initialize(filepath)
     @filepath = filepath
@@ -9,9 +11,13 @@ class CSVParser
   private
 
     def parse_data
-      # open the file
-      # strig interpretation
-      # assign @data to set of data structures
-      @data = { info: nil }
+      arrays  = CSV.read(filepath)
+      headers = arrays[0].map(&:strip)
+
+      @data = arrays[1..-1].map { |values| Hash[headers.zip(pretty_values values)] }
+    end
+
+    def pretty_values(values)
+      values.map { |val| val ? val.strip : "unknown" }
     end
 end

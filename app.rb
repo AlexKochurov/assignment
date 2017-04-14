@@ -2,14 +2,42 @@ require_relative 'config/database'
 require_relative 'app/models/models'
 require_relative 'app/services/csv_parser'
 
-import = CSVParser.new('import/sync_client_data.csv')
-p import.data
+# Get the hash of residents: { external_id => resident }
+residents = {}
+CSVParser.new('import/sync_client_data.csv').data.each do |resident|
+  residents[resident["TenantId"]] = resident
+end
 
-b = Building.first
-b.floors.each do |floor|
-  p floor
+# Reduce number of requests to DB. Don't check every resident
+stored_residents_ids = Resident.select(:external_id).where(external_id: residents.keys)
+                         .map(&:external_id)
 
-  floor.apartments.each do |apt|
-    puts "  apt: #{apt.inspect}"
+building = Building.first
+
+# Process only new residents
+residents.values_at(*(residents.keys - stored_residents_ids)).each do |resident_data|
+  floor = building.floors.find_by(number: resident_data["ApartmentId"][0].to_i)
+  unless floor
+    floor = building.floors.create(number: resident_data["ApartmentId"][0].to_i)
+    puts "Created floor: #{floor.inspect}"
+    # Send data to WEBrick
   end
+
+  apartment = floor.apartments.find_by(external_id: resident_data["ApartmentId"])
+  unless apartment
+    apartment = floor.apartments.create(external_id: resident_data["ApartmentId"])
+    puts "Created apartment: #{apartment.inspect}"
+    # Send data to WEBrick
+  end
+
+  resident =
+    apartment.residents.create(
+      external_id:  resident_data["TenantId"],
+      first_name:   resident_data["First Name"],
+      last_name:    resident_data["Last name"],
+      email:        resident_data["Email"],
+      phone_number: resident_data["Telephone Number"]
+    )
+  puts "Created resident: #{resident.inspect}"
+  # Send data to WEBrick
 end
