@@ -1,20 +1,14 @@
 # Assignment
 
-## Notes
+## Info
 
-As for as I understood your task, Web Server doesn't touch the database, it only writes logs
+```ruby
+rake s         # starts the server
+ruby app.rb    # application runs
+rake dback     # to "rollback" db changes
+```
 
-It seems a little strange that parser has access to DB, and it has to send data to WEBrick.
-So I'm in doubt if I understood it correctly
-
-## To do
-
-- **Parse csv and create convinient data structures** - *done*
-- **Write logic for checking if import data belongs to DB already** - *done*
-- **Send new data to WEBrick** - *done*
-- **Configure WEBrick to get Post responces** - *done*
-
-## Logs examples
+## Example of logs
 
 ```
 127.0.0.1 - - [14/Apr/2017:05:31:16 MSK] "POST /v1/people HTTP/1.1" 200 21 PARAMETERS=id=4&apartment_id=1&external_id=t0173470&first_name=Emilia&last_name=O%27kon&email=emiliaokon%40gmail.com&phone_number=212-679-123
